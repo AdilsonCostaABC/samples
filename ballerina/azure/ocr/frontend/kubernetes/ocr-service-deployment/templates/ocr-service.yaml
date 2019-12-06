@@ -1,0 +1,83 @@
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  annotations: {}
+  finalizers: []
+  labels:
+    app: "ocr-service"
+  name: "ocrslistener-svc"
+  ownerReferences: []
+spec:
+  externalIPs: []
+  loadBalancerSourceRanges: []
+  ports:
+  - port: 80
+    protocol: "TCP"
+    targetPort: 8080
+  selector:
+    app: "ocr-service"
+  type: "LoadBalancer"
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  annotations: {}
+  finalizers: []
+  labels: {}
+  name: "ocrservice-ballerina-conf-config-map"
+  ownerReferences: []
+data:
+  ballerina.conf: "STORAGE_ACCESS_KEY = \"AtdpSOGWfEKilzydVQLNVHLwxY8jAETTs+kOYcv+/Rl22CNqRwDiJenZsZimY92xcIW/jmySTr6j3Q0K8H9vgQ==\"\
+    \nSTORAGE_ACCOUNT = \"storage1777\"\nCV_KEY = \"1a7e96bf3a6a4ef1aad3d212836c39ed\"\
+    \nGMAIL_CLIENTID = \"969777115314-h19vqaoe0kk8tnn0ea2t73anno2l0m3c.apps.googleusercontent.com\"\
+    \nGMAIL_CLIENTSECRET = \"Wwd2tPVAv50bWZFpZ88xeaKK\"\nGMAIL_REFRESHTOKEN = \"1/EvOdYiOaTslNzZPUnC_bcb3jtWROPL4MG2RIS-uy6BU\"\
+    \nGMAIL_ACCESSTOKEN = \"ya29.GltuBqhteTMU1fR-IC7kmPPmTXT_XCGJ8WhuidRrStpSnF06QRvuD9rf4hkOlI90psX5bqnup--ta2miGfFERKX2GQBgF_06YOujI9XM1aeDFDRbeYzpcChhHZpr\"\
+    \n\n"
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  annotations: {}
+  finalizers: []
+  labels:
+    app: "ocr-service"
+  name: "ocr-service-deployment"
+  ownerReferences: []
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations: {}
+      finalizers: []
+      labels:
+        app: "ocr-service"
+      ownerReferences: []
+    spec:
+      containers:
+      - args: []
+        command: []
+        env:
+        - name: "CONFIG_FILE"
+          value: "/home/ballerina/conf/ballerina.conf"
+        envFrom: []
+        image: "lafernando/ocrsxxx"
+        imagePullPolicy: "Always"
+        name: "ocr-service-deployment"
+        ports:
+        - containerPort: 8080
+          protocol: "TCP"
+        volumeMounts:
+        - mountPath: "/home/ballerina/conf/"
+          name: "ocrservice-ballerina-conf-config-map-volume"
+          readOnly: false
+      hostAliases: []
+      imagePullSecrets: []
+      initContainers: []
+      nodeSelector: {}
+      tolerations: []
+      volumes:
+      - configMap:
+          items: []
+          name: "ocrservice-ballerina-conf-config-map"
+        name: "ocrservice-ballerina-conf-config-map-volume"
